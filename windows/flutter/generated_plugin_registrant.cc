@@ -6,12 +6,12 @@
 
 #include "generated_plugin_registrant.h"
 
-#include <flutter_blue_plus_winrt/flutter_blue_plus_plugin.h>
+#include <flutter_bluetooth_classic_serial/flutter_bluetooth_classic_plugin.h>
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
-  FlutterBluePlusPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("FlutterBluePlusPlugin"));
+  FlutterBluetoothClassicPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("FlutterBluetoothClassicPlugin"));
   PermissionHandlerWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
 }
