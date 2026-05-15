@@ -8,80 +8,81 @@ class Homepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'ESP32 Send Data', home: const SendDataPage());
+    return MaterialApp(
+      home: const Esp32DataPage(),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }
 
-class SendDataPage extends StatelessWidget {
-  const SendDataPage({super.key});
+class Esp32DataPage extends StatefulWidget {
+  const Esp32DataPage({super.key});
 
-  // IP پیش‌فرضی که ESP32 AP می‌دهد معمولاً این است: 192.168.4.1
-  // اگر در سریال چیز دیگری دیدی همین را تغییر بده.
-  final String esp32Url = 'http://192.168.4.1';
+  @override
+  State<Esp32DataPage> createState() => _Esp32DataPageState();
+}
 
-  Future<void> send(String text, int num) async {
-    final uri = Uri.parse(
-      '$esp32Url/set?text=${Uri.encodeQueryComponent(text)}&num=$num',
-    );
+class _Esp32DataPageState extends State<Esp32DataPage> {
+  String receivedText = "No data yet";
+  String receivedNumber = "0";
 
+  final String esp32Ip = "192.168.4.1";
+
+  Future<void> fetchDataFromEsp32() async {
     try {
-      final response = await http.get(uri).timeout(const Duration(seconds: 3));
+      final url = Uri.parse("http://$esp32Ip/data");
+      final response = await http.get(url).timeout(const Duration(seconds: 5));
 
-      // برای دیباگ می‌تونی ببینی چی برگشته
-      debugPrint('Request URL: $uri');
-      debugPrint('Status: ${response.statusCode}');
-      debugPrint('Body: ${response.body}');
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          receivedText = data["text"].toString();
+          receivedNumber = data["number"].toString();
+        });
+      } else {
+        setState(() {
+          receivedText = "HTTP Error";
+          receivedNumber = response.statusCode.toString();
+        });
+      }
     } catch (e) {
-      debugPrint('Error: $e');
+      setState(() {
+        receivedText = "Connection failed";
+        receivedNumber = "0";
+      });
+      print("Error: $e");
     }
   }
 
-  Future<void> fetchData() async {
-    final url = Uri.parse('$esp32Url/data');
-    print("=======1");
-
-    final response = await http.get(url);
-    print("=======2");
-
-    if (response.statusCode == 200) {
-      print("=======3");
-
-      final data = jsonDecode(response.body);
-      print(data['name']);
-      print(data['temp']);
-      print(data['state']);
-    } else {
-      print('Error: ${response.statusCode}');
-      print('Error: ${response.body}');
-    }
+  @override
+  void initState() {
+    super.initState();
+    fetchDataFromEsp32();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('ESP32 Send Data')),
+      appBar: AppBar(title: const Text("ESP32 -> Flutter")),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                send("ESP 32", 42);
-                fetchData();
-              },
-              child: const Text('ارسال رشته + عدد (سلام / 42)'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => send("Hello", 123),
-              child: const Text('ارسال رشته + عدد (Hello / 123)'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => send("Hesldghlskjdfhglsllo", 1249673),
-              child: const Text('ارسال رشته + عدد (Hello / 123)'),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Text: $receivedText", style: const TextStyle(fontSize: 20)),
+              const SizedBox(height: 10),
+              Text(
+                "Number: $receivedNumber",
+                style: const TextStyle(fontSize: 20),
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: fetchDataFromEsp32,
+                child: const Text("Get Data from ESP32"),
+              ),
+            ],
+          ),
         ),
       ),
     );
