@@ -15,7 +15,7 @@ class ESP32ControlPage extends StatelessWidget {
   Future<void> sendCommand(String command) async {
     try {
       final response = await http.get(Uri.parse('$esp32Url/led/$command'));
-      // print(response.body); // اختیاری: خطاگیری یا لاگ خروجی سرور
+      print(response.body); // اختیاری: خطاگیری یا لاگ خروجی سرور
     } catch (e) {
       // خطاگیری ساده
       // print('Error: $e');
