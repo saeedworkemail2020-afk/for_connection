@@ -1,87 +1,121 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Homepage extends StatelessWidget {
-  const Homepage({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'ESP32 Send Data', home: const SendDataPage());
+    return MaterialApp(title: 'ESP32 Communication', home: MyHomePage());
   }
 }
 
-class SendDataPage extends StatelessWidget {
-  const SendDataPage({super.key});
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
 
-  // IP پیش‌فرضی که ESP32 AP می‌دهد معمولاً این است: 192.168.4.1
-  // اگر در سریال چیز دیگری دیدی همین را تغییر بده.
-  final String esp32Url = 'http://192.168.4.1';
+class _MyHomePageState extends State<MyHomePage> {
+  final TextEditingController _textController = TextEditingController();
+  final TextEditingController _numberController = TextEditingController();
+  String _esp32Response = 'No response yet';
 
-  Future<void> send(String text, int num) async {
-    final uri = Uri.parse(
-      '$esp32Url/set?text=${Uri.encodeQueryComponent(text)}&num=$num',
-    );
+  // این آدرس آی‌پی پیش‌فرض ESP32 در حالت AP هست
+  final String esp32IpAddress = "192.168.4.1";
+
+  Future<void> sendDataToESP32() async {
+    final url = Uri.parse("http://$esp32IpAddress/postData"); // آدرس ESP32
 
     try {
-      final response = await http.get(uri).timeout(const Duration(seconds: 3));
+      final response = await http
+          .post(
+            url,
+            body: {
+              "text": _textController.text,
+              "number": _numberController.text.isEmpty
+                  ? "0"
+                  : _numberController.text,
+            },
+          )
+          .timeout(
+            Duration(seconds: 5),
+          ); // اضافه کردن تایم‌اوت برای جلوگیری از هنگ کردن
 
-      // برای دیباگ می‌تونی ببینی چی برگشته
-      debugPrint('Request URL: $uri');
-      debugPrint('Status: ${response.statusCode}');
-      debugPrint('Body: ${response.body}');
+      setState(() {
+        _esp32Response = 'ESP32 Response: ${response.body}';
+      });
+      print("Response from ESP32: ${response.body}");
     } catch (e) {
-      debugPrint('Error: $e');
+      setState(() {
+        _esp32Response =
+            'Error: Could not connect to ESP32. Make sure you are connected to the "${_getApSsid()}" Wi-Fi network.';
+      });
+      print("Error sending data: $e");
     }
   }
 
-  Future<void> fetchData() async {
-    final url = Uri.parse('$esp32Url/data');
-    print("=======1");
+  // این تابع کمک می‌کنه که اسم AP رو از تنظیمات احتمالی بخونیم یا پیش‌فرض بدیم
+  String _getApSsid() {
+    // در اینجا می‌تونید اسم AP رو ثابت بذارید یا از تنظیمات اپلیکیشن بخونید
+    return "ESP32_AP"; // باید با اسم `ap_ssid` در کد ESP32 یکی باشه
+  }
 
-    final response = await http.get(url);
-    print("=======2");
-
-    if (response.statusCode == 200) {
-      print("=======3");
-
-      final data = jsonDecode(response.body);
-      print(data['name']);
-      print(data['temp']);
-      print(data['state']);
-    } else {
-      print('Error: ${response.statusCode}');
-      print('Error: ${response.body}');
-    }
+  @override
+  void dispose() {
+    _textController.dispose();
+    _numberController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('ESP32 Send Data')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                send("ESP 32", 42);
-                fetchData();
-              },
-              child: const Text('ارسال رشته + عدد (سلام / 42)'),
+      appBar: AppBar(title: Text('ESP32 AP Communicator')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextField(
+                  controller: _textController,
+                  decoration: InputDecoration(
+                    labelText: 'Enter Text',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  controller: _numberController,
+                  decoration: InputDecoration(
+                    labelText: 'Enter Number',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: sendDataToESP32,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    textStyle: TextStyle(fontSize: 16),
+                  ),
+                  child: Text('Send Data to ESP32'),
+                ),
+                SizedBox(height: 30),
+                Text(
+                  _esp32Response,
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  "Ensure your device is connected to the '${_getApSsid()}' Wi-Fi network.",
+                  style: TextStyle(fontSize: 12, color: Colors.redAccent),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => send("Hello", 123),
-              child: const Text('ارسال رشته + عدد (Hello / 123)'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => send("Hesldghlskjdfhglsllo", 1249673),
-              child: const Text('ارسال رشته + عدد (Hello / 123)'),
-            ),
-          ],
+          ),
         ),
       ),
     );
