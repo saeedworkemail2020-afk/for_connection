@@ -1,9 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:for_connection/Featuers/Home/home_controller.dart';
 
-class Homepage extends StatelessWidget {
-  const Homepage({super.key});
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,12 +12,16 @@ class Homepage extends StatelessWidget {
   }
 }
 
+final controller = HomeController();
+final model = controller.model;
+
 class SendDataPage extends StatelessWidget {
   const SendDataPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: model.homeScaffoldKey,
       appBar: AppBar(title: const Text('ESP32 Send Data')),
       body: Center(
         child: Column(
