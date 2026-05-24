@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:for_connection/Featuers/Home/home_controller.dart';
 import 'package:for_connection/Featuers/Home/home_view.dart';
 import 'package:get/get.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  MyApp({super.key});
+  final controller = HomeController();
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
