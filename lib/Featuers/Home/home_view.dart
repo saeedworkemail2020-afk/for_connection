@@ -6,7 +6,7 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'ESP32 Data', home: const SendDataPage());
+    return MaterialApp(home: const SendDataPage());
   }
 }
 
@@ -21,7 +21,7 @@ class SendDataPage extends StatelessWidget {
     return Scaffold(
       key: model.homeScaffoldKey,
       appBar: AppBar(
-        title: const Text('ESP32 Send Data'),
+        title: const Text('ESP32 Data'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white54,
       ),
