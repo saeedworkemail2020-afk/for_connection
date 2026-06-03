@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:for_connection/Featuers/Home/home_controller.dart';
 
@@ -8,7 +6,7 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'ESP32 Send Data', home: const SendDataPage());
+    return MaterialApp(title: 'ESP32 Data', home: const SendDataPage());
   }
 }
 
@@ -22,7 +20,12 @@ class SendDataPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: model.homeScaffoldKey,
-      appBar: AppBar(title: const Text('ESP32 Send Data')),
+      appBar: AppBar(
+        title: const Text('ESP32 Send Data'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white54,
+      ),
+
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -32,41 +35,36 @@ class SendDataPage extends StatelessWidget {
                 Center(
                   child: CustomPaint(
                     size: Size(300, 300),
-                    painter: SemiCircleProgressPainter(0.5),
+                    painter: model.semicircle(0.5),
                   ),
                 ),
                 Center(
                   child: Column(
-                    children: [SizedBox(height: 150), Text('data')],
+                    children: [
+                      SizedBox(height: 150),
+                      Text(
+                        'data',
+                        style: TextStyle(
+                          color: Colors.blueGrey,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Column(
               children: [
-                Column(
-                  children: [
-                    Container(
-                      color: Colors.transparent,
-                      width: 100,
-                      height: 50,
-                      child: Center(child: Text('data')),
-                    ),
-                    ElevatedButton(onPressed: () {}, child: Text("Refresh")),
-                  ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [model.text('data'), model.text('  status')],
                 ),
-                Column(
-                  children: [
-                    Container(
-                      color: Colors.transparent,
-                      width: 100,
-                      height: 50,
-                      child: Center(child: Text('status')),
-                    ),
-                    ElevatedButton(onPressed: () {}, child: Text("LED")),
-                  ],
+                Divider(thickness: 1.5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [model.button("Refresh"), model.button("LED")],
                 ),
               ],
             ),
@@ -74,29 +72,5 @@ class SendDataPage extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class SemiCircleProgressPainter extends CustomPainter {
-  final double progress; // عددی بین 0.0 تا 1.0
-
-  SemiCircleProgressPainter(this.progress);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 20
-      ..strokeCap = StrokeCap.round
-      ..color = Colors.blue;
-
-    // شروع از بالا-چپ و کشیدن به اندازه یک نیم‌دایره
-    canvas.drawArc(rect, -pi, pi * progress, false, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant SemiCircleProgressPainter oldDelegate) {
-    return oldDelegate.progress != progress;
   }
 }
