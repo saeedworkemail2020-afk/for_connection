@@ -1,5 +1,5 @@
 import 'dart:math';
-
+// import 'package:for_connection/Featuers/Home/home_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +8,7 @@ class HomeModel extends GetxController {
   HomeModel() {
     homeScaffoldKey = GlobalKey<ScaffoldState>();
   }
+  // var controller = HomeController().services;
   SemiCircleProgressPainter semicircle(double progress) =>
       SemiCircleProgressPainter(progress);
   Container text(String label) {
