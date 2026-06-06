@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:for_connection/Featuers/Home/home_controller.dart';
+import 'package:get/get.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(home: const SendDataPage());
-  }
+  State<HomeView> createState() => _HomeViewState();
 }
 
 final controller = HomeController();
 final model = controller.model;
+final services = controller.services;
 
-class SendDataPage extends StatelessWidget {
-  const SendDataPage({super.key});
+class _HomeViewState extends State<HomeView> {
+  final channel = WebSocketChannel.connect(Uri.parse('ws://192.168.4.1:81'));
+
+  String text = "";
+
+  @override
+  void initState() {
+    super.initState();
+    services.status();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +66,16 @@ class SendDataPage extends StatelessWidget {
 
             Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [model.text('data'), model.text('  status')],
+                Obx(
+                  () => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      model.text('data'),
+                      model.text('  ${services.ledstatus.value}'),
+                    ],
+                  ),
                 ),
+
                 Divider(thickness: 1.5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,

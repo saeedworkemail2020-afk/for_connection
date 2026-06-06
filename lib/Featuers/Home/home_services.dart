@@ -1,8 +1,19 @@
+import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class HomeServices {
+class HomeServices extends GetxController {
   late WebSocketChannel channel;
-  HomeServices() {
-    channel = WebSocketChannel.connect(Uri.parse('ws://192.168.4.1:81'));
+  RxString ledstatus = 'off'.obs;
+  RxInt mydata = 0.obs;
+  HomeServices(this.channel);
+
+  void send(String msg) {
+    channel.sink.add(msg);
+  }
+
+  void status() {
+    channel.stream.listen((message) {
+      ledstatus.value = message;
+    });
   }
 }

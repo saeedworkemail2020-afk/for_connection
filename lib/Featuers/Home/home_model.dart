@@ -1,14 +1,19 @@
 import 'dart:math';
-// import 'package:for_connection/Featuers/Home/home_controller.dart';
+import 'package:for_connection/Featuers/Home/home_services.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class HomeModel extends GetxController {
   late GlobalKey<ScaffoldState> homeScaffoldKey;
+  late HomeServices services;
+  late WebSocketChannel channel;
+
   HomeModel() {
     homeScaffoldKey = GlobalKey<ScaffoldState>();
+    channel = WebSocketChannel.connect(Uri.parse('ws://192.168.4.1:81'));
+    services = HomeServices(channel);
   }
-  // var controller = HomeController().services;
   SemiCircleProgressPainter semicircle(double progress) =>
       SemiCircleProgressPainter(progress);
   Container text(String label) {
@@ -33,6 +38,7 @@ class HomeModel extends GetxController {
       ),
       onPressed: () {
         if (action == 'LED') {
+          services.send('led');
         } else {}
       },
       child: Text(action),
