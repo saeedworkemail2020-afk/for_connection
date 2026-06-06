@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:for_connection/Featuers/Home/home_controller.dart';
 import 'package:get/get.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -15,14 +14,11 @@ final model = controller.model;
 final services = controller.services;
 
 class _HomeViewState extends State<HomeView> {
-  final channel = WebSocketChannel.connect(Uri.parse('ws://192.168.4.1:81'));
-
-  String text = "";
-
   @override
   void initState() {
     super.initState();
     services.status();
+    services.get();
   }
 
   @override
@@ -70,7 +66,7 @@ class _HomeViewState extends State<HomeView> {
                   () => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      model.text('data'),
+                      model.text(services.mydata.value),
                       model.text('  ${services.ledstatus.value}'),
                     ],
                   ),

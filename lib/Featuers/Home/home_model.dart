@@ -39,7 +39,9 @@ class HomeModel extends GetxController {
       onPressed: () {
         if (action == 'LED') {
           services.send('led');
-        } else {}
+        } else {
+          services.get();
+        }
       },
       child: Text(action),
     );
