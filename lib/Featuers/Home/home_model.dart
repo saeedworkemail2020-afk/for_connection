@@ -8,6 +8,7 @@ class HomeModel extends GetxController {
   late GlobalKey<ScaffoldState> homeScaffoldKey;
   late HomeServices services;
   late WebSocketChannel channel;
+  RxString mydata = '0'.obs;
 
   HomeModel() {
     homeScaffoldKey = GlobalKey<ScaffoldState>();
@@ -36,11 +37,11 @@ class HomeModel extends GetxController {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
-      onPressed: () {
+      onPressed: () async {
         if (action == 'LED') {
           services.send('led');
-        } else {
-          services.get();
+        } else if (action == 'Refresh') {
+          mydata.value = await services.get();
         }
       },
       child: Text(action),

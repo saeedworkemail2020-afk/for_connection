@@ -18,7 +18,6 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     services.status();
-    services.get();
   }
 
   @override
@@ -66,7 +65,7 @@ class _HomeViewState extends State<HomeView> {
                   () => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      model.text(services.mydata.value),
+                      model.text(model.mydata.value),
                       model.text('  ${services.ledstatus.value}'),
                     ],
                   ),

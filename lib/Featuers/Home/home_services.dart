@@ -6,10 +6,10 @@ import 'package:http/http.dart' as http;
 class HomeServices extends GetxController {
   late WebSocketChannel channel;
   final String esp32Ip = "192.168.4.1";
-  RxString mydata = '0'.obs;
+  String mydata = '0';
   RxString ledstatus = 'off'.obs;
   HomeServices(this.channel);
-  void get() async {
+  Future<String> get() async {
     try {
       final url = Uri.parse("http://$esp32Ip/data");
       final response = await http.get(url).timeout(const Duration(seconds: 5));
@@ -17,16 +17,16 @@ class HomeServices extends GetxController {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        mydata.value = data["number"].toString();
+        mydata = data["number"].toString();
       } else {
-        mydata.value = response.statusCode.toString();
+        mydata = response.statusCode.toString();
       }
     } catch (e) {
-      mydata.value = "0";
+      mydata = "0";
 
       print("Error: $e");
     }
-    print("Data: ${mydata.value}");
+    return mydata;
   }
 
   void send(String msg) {
