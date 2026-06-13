@@ -78,6 +78,14 @@ class _HomeViewState extends State<HomeView> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [model.button("Refresh"), model.button("LED")],
                 ),
+                SizedBox(height: 50),
+                ElevatedButton(
+                  onPressed: () {
+                    services.sendreset();
+                    model.mydata.value = '0';
+                  },
+                  child: Text("Reset"),
+                ),
               ],
             ),
           ],

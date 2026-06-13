@@ -30,8 +30,18 @@ class HomeServices extends GetxController {
     return mydata;
   }
 
-  void send(String msg) {
+  void sendled() {
+    final msg = jsonEncode({"cmd": "led"});
     channel.sink.add(msg);
+  }
+
+  void sendreset() {
+    final msg = jsonEncode({"cmd": "reset"});
+    channel.sink.add(msg);
+    ledstatus.value = "off";
+
+    mydata = '0';
+    touch.value = 0.0;
   }
 
   void status() {
@@ -39,7 +49,6 @@ class HomeServices extends GetxController {
       final data = jsonDecode(message);
       ledstatus.value = data["status"];
       touch.value = (data["touch"] as num).toDouble();
-      print(data.toString());
     });
   }
 }

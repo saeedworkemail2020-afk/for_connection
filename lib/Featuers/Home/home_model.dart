@@ -39,7 +39,7 @@ class HomeModel extends GetxController {
       ),
       onPressed: () async {
         if (action == 'LED') {
-          services.send('led');
+          services.sendled();
         } else if (action == 'Refresh') {
           mydata.value = await services.get();
         }
