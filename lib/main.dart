@@ -15,6 +15,3 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(home: HomeView());
   }
 }
-// final controller = HomeController();
-// final model = controller.model;
-// final services = controller.services;

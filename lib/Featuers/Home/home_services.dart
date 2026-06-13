@@ -8,6 +8,7 @@ class HomeServices extends GetxController {
   final String esp32Ip = "192.168.4.1";
   String mydata = '0';
   RxString ledstatus = 'off'.obs;
+  RxDouble touch = 0.0.obs;
   HomeServices(this.channel);
   Future<String> get() async {
     try {
@@ -35,7 +36,10 @@ class HomeServices extends GetxController {
 
   void status() {
     channel.stream.listen((message) {
-      ledstatus.value = message;
+      final data = jsonDecode(message);
+      ledstatus.value = data["status"];
+      touch.value = (data["touch"] as num).toDouble();
+      print(data.toString());
     });
   }
 }

@@ -34,29 +34,31 @@ class _HomeViewState extends State<HomeView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Stack(
-              children: [
-                Center(
-                  child: CustomPaint(
-                    size: Size(300, 300),
-                    painter: model.semicircle(0.5),
+            Obx(
+              () => Stack(
+                children: [
+                  Center(
+                    child: CustomPaint(
+                      size: Size(300, 300),
+                      painter: model.semicircle(services.touch.value / 10),
+                    ),
                   ),
-                ),
-                Center(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 150),
-                      Text(
-                        'data',
-                        style: TextStyle(
-                          color: Colors.blueGrey,
-                          fontWeight: FontWeight.w600,
+                  Center(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 150),
+                        Text(
+                          services.touch.value.toString(),
+                          style: TextStyle(
+                            color: Colors.blueGrey,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
 
             Column(
