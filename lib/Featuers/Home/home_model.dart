@@ -42,6 +42,9 @@ class HomeModel extends GetxController {
           services.sendled();
         } else if (action == 'Refresh') {
           mydata.value = await services.get();
+        } else if (action == 'Reset') {
+          services.sendreset();
+          mydata.value = '0';
         }
       },
       child: Text(action),
@@ -63,7 +66,6 @@ class SemiCircleProgressPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..color = Colors.blue;
 
-    // شروع از بالا-چپ و کشیدن به اندازه یک نیم‌دایره
     canvas.drawArc(rect, -pi, pi * progress, false, paint);
   }
 

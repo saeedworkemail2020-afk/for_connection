@@ -79,13 +79,7 @@ class _HomeViewState extends State<HomeView> {
                   children: [model.button("Refresh"), model.button("LED")],
                 ),
                 SizedBox(height: 50),
-                ElevatedButton(
-                  onPressed: () {
-                    services.sendreset();
-                    model.mydata.value = '0';
-                  },
-                  child: Text("Reset"),
-                ),
+                model.button("Reset"),
               ],
             ),
           ],

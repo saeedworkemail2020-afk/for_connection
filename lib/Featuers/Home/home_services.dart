@@ -20,7 +20,7 @@ class HomeServices extends GetxController {
 
         mydata = data["number"].toString();
       } else {
-        mydata = response.statusCode.toString();
+        // mydata = response.statusCode.toString();
       }
     } catch (e) {
       mydata = "0";
